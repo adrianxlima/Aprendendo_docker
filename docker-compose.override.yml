@@ -1,0 +1,37 @@
+version: '3.4'
+
+services:
+  ecommerce:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+      DBCONN: "Server=db;Port=5432;Database=postgres1;User Id=postgres1;Password=postgres1"
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - ecommerce-network 
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres1
+      POSTGRES_USER: postgres1
+      POSTGRES_DB: postgres1
+    ports:
+      - 55518:5432
+    networks:
+      - ecommerce-network
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+networks:
+  ecommerce-network:    
